@@ -1,0 +1,7 @@
+../Inc/core_cm4.h:1688:22:__NVIC_EnableIRQ	2
+../Inc/core_cm4.h:1816:22:__NVIC_SetPriority	2
+../Src/game_logic.c:16:6:enable_wire_interrupts	1
+../Src/game_logic.c:44:6:EXTI4_IRQHandler	2
+../Src/game_logic.c:51:6:EXTI9_5_IRQHandler	4
+../Src/game_logic.c:69:6:handle_wire_pull	6
+../Src/game_logic.c:93:6:end_game	2

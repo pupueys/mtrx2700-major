@@ -1,0 +1,8 @@
+"./Src/digital_io.o"
+"./Src/game_logic.o"
+"./Src/main.o"
+"./Src/seven_seg.o"
+"./Src/syscalls.o"
+"./Src/sysmem.o"
+"./Src/timer.o"
+"./Startup/startup_stm32f303vctx.o"
