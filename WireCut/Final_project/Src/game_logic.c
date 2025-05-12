@@ -6,8 +6,8 @@
 
 #define CORRECT_WIRE_COUNT 2
 
-static volatile uint8_t wire_pulled[4] = {0, 0, 0, 0};         // Keep track of the wires pulled
-static const uint8_t correct_wires[4] = {1, 0, 1, 0}; // Example: wires 0 and 2 are correct
+static volatile uint8_t wire_pulled[4] = {0, 0, 0, 0};        // Keep track of the wires pulled
+static const uint8_t correct_wires[4] = {1, 0, 1, 0};         // Hardcode Wire 1 and 3 as correct wires
 static volatile uint8_t correct_count = 0;                    // Number of correct wires pulled
 static volatile uint8_t game_over = 0;                        // Indicate game over
 
