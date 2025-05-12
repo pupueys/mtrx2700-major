@@ -9,6 +9,8 @@ Steinway piano = {
         { TSC_GROUP6_IDX, 1700, FKEY, 0 },  // F
         { TSC_GROUP8_IDX, 1700, GKEY, 0 },  // G
     },
+
+	// initially, all are zero
     .key_states = { 0 },
     .sequence = { 0 },
     .touch_count = 0,
@@ -40,16 +42,18 @@ void HAL_TSC_ConvCpltCallback(TSC_HandleTypeDef* htsc){
 
 
 void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16_t threshold) {
-	if (sample_value < threshold) {
 
-		if (!piano->key_pressed) {
+	if (sample_value < threshold) {				// checks if the value is under the threshold for "pressed"
+												// if pressed, sample_value is below the threshold
 
-			piano->key_pressed = 1;
-			piano->key_clear = 1;
-			set_leds(key);
+		if (!piano->key_pressed) {				// case when key pressed
+
+		  piano->key_pressed = 1;
+		  piano->key_clear = 1;
+		  set_leds(key);
 		  enable_timer2_interrupt();
 		  enable_timer3_interrupt();
-			gameplay_logic(piano, key);			// when key pressed, progress to game logic
+		  gameplay_logic(piano, key);			// when key pressed, progress to game logic
 
 		}
 	}
@@ -73,6 +77,7 @@ void gameplay_logic(Steinway* piano, uint8_t key) {
 
 	if (piano->key_valid && piano->key_pressed) {
 
+		// flag the key as pressed
 		piano->key_states[key] = 1;
 
 		// check how many keys have been pressed

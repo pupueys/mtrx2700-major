@@ -24,6 +24,6 @@ void set_leds(uint8_t key) {
 
 void clear_leds(uint8_t key) {
 
-	GPIOE->ODR &= !(1 << (8 + key));
+	GPIOE->ODR &= !(1 << (8 + key));  // Turn OFF LED corresponding to key
 }
 

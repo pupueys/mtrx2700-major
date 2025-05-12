@@ -1,3 +1,12 @@
+/*
+  **********************************************************************************
+ * 									serialise.h										*
+ * 			Contains all functions related to data serialisation functionality		*
+ *																					*
+ * 																					*
+  **********************************************************************************
+ */
+
 #ifndef SERIALISE_HEADER
 #define SERIALISE_HEADER
 

@@ -1,11 +1,23 @@
+/*
+  **********************************************************************************
+ * 									serial.h										*
+ * Contains all functions related to the serial functionality of the module, 		*
+ * including initialisation, input and output.										*
+ * 																					*
+  **********************************************************************************
+ */
+
 #ifndef SERIAL_PORT_HEADER
 #define SERIAL_PORT_HEADER
 
-
+/*************/
+/* INCLUDES */
+/*************/
 #include <stdint.h>
 
-// Defining the serial port struct, the definition is hidden in the
-// c file as no one really needs to know this.
+/*************/
+/* VARIABLES */
+/*************/
 struct _SerialPort;
 typedef struct _SerialPort SerialPort;
 
@@ -25,6 +37,10 @@ enum {
 };
 
  
+/*************/
+/* FUNCTIONS */
+/*************/
+
 // SerialInitialise - initialise the serial port
 // Input: baud rate as defined in the enum
 void SerialInitialise(uint32_t baudRate, SerialPort *serial_port, void (*completion_function)(uint32_t) );
