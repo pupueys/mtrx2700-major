@@ -7,7 +7,7 @@
 #define CORRECT_WIRE_COUNT 2
 
 static volatile uint8_t wire_pulled[4] = {0, 0, 0, 0};         // Keep track of the wires pulled
-static const uint8_t correct_wires[4] = {1, 0, 1, 0}; // Example: wires 0 and 2 are correct
+static const uint8_t correct_wires[4] = {1, 0, 1, 0};         // hard code wires 1 and 3 to be correct
 static volatile uint8_t correct_count = 0;                    // Number of correct wires pulled
 static volatile uint8_t game_over = 0;                        // Indicate game over
 
@@ -44,24 +44,24 @@ void enable_wire_interrupts() {
 void EXTI4_IRQHandler(void) {
 	if (EXTI->PR & EXTI_PR_PR4) {
 		EXTI->PR |= EXTI_PR_PR4;       // Clear interrupt flag
-		handle_wire_pull(0);           // Wire 0 = PE4
+		handle_wire_pull(0);           // Wire 1 = PE4
 	}
 }
 
 void EXTI9_5_IRQHandler(void) {
 	if (EXTI->PR & EXTI_PR_PR5) {
 		EXTI->PR |= EXTI_PR_PR5;
-		handle_wire_pull(1);           // Wire 1 = PE5
+		handle_wire_pull(1);           // Wire 2 = PE5
 
 	}
 	if (EXTI->PR & EXTI_PR_PR6) {
 		EXTI->PR |= EXTI_PR_PR6;
-		handle_wire_pull(2);           // Wire 2 = PE6
+		handle_wire_pull(2);           // Wire 3 = PE6
 
 	}
 	if (EXTI->PR & EXTI_PR_PR7) {
 		EXTI->PR |= EXTI_PR_PR7;
-		handle_wire_pull(3);           // Wire 3 = PE7
+		handle_wire_pull(3);           // Wire 4 = PE7
 	}
 }
 
@@ -77,7 +77,7 @@ void handle_wire_pull(int wire_index) {
         correct_count++;
     }
     else {
-        reduce_time(15); // Reduce time by 3 seconds
+        reduce_time(15); // Reduce time by 15 seconds
         update_display(time_left);
     }
 
