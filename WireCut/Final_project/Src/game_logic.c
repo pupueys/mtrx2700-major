@@ -6,8 +6,8 @@
 
 #define CORRECT_WIRE_COUNT 2
 
-static volatile uint8_t wire_pulled[4] = {0, 0, 0, 0};        // Keep track of the wires pulled
-static const uint8_t correct_wires[4] = {1, 0, 1, 0};         // Hardcode Wire 1 and 3 as correct wires
+static volatile uint8_t wire_pulled[4] = {0, 0, 0, 0};         // Keep track of the wires pulled
+static const uint8_t correct_wires[4] = {1, 0, 1, 0}; // Example: wires 0 and 2 are correct
 static volatile uint8_t correct_count = 0;                    // Number of correct wires pulled
 static volatile uint8_t game_over = 0;                        // Indicate game over
 
@@ -16,52 +16,52 @@ static volatile uint8_t game_over = 0;                        // Indicate game o
 void enable_wire_interrupts() {
 	__disable_irq();  // Disable global interrupts while configuring
 
-	// Enable SYSCFG clock for EXTI configuration
+	// 1. Enable SYSCFG clock for EXTI configuration
 	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
 
-	// Map EXTI lines 4–7 to Port E using SPL-style macros
+	// 2. Map EXTI lines 4–7 to Port E using SPL-style macros
 	SYSCFG->EXTICR[1] = SYSCFG_EXTICR2_EXTI4_PE |
 	                    SYSCFG_EXTICR2_EXTI5_PE |
 	                    SYSCFG_EXTICR2_EXTI6_PE |
 	                    SYSCFG_EXTICR2_EXTI7_PE;
 
-	// Select falling edge trigger to detect wire being pulled (goes from 3.3V to 0V)
+	// 3. Select falling edge trigger to detect wire being pulled (goes from 3.3V to 0V)
 	EXTI->FTSR |= EXTI_FTSR_TR4 | EXTI_FTSR_TR5 | EXTI_FTSR_TR6 | EXTI_FTSR_TR7;
 
-	// Unmask (enable) EXTI lines 4–7
+	// 4. Unmask (enable) EXTI lines 4–7
 	EXTI->IMR |= EXTI_IMR_MR4 | EXTI_IMR_MR5 | EXTI_IMR_MR6 | EXTI_IMR_MR7;
 
-	// Enable NVIC IRQs for EXTI lines
+	// 5. Enable NVIC IRQs for EXTI lines
 	NVIC_SetPriority(EXTI4_IRQn, 1);       // PE4
 	NVIC_EnableIRQ(EXTI4_IRQn);
 
 	NVIC_SetPriority(EXTI9_5_IRQn, 1);     // PE5–PE7
 	NVIC_EnableIRQ(EXTI9_5_IRQn);
 
-	__enable_irq();  // Re-enable interrupts
+	__enable_irq();  // Re-enable global interrupts
 }
 
 void EXTI4_IRQHandler(void) {
 	if (EXTI->PR & EXTI_PR_PR4) {
 		EXTI->PR |= EXTI_PR_PR4;       // Clear interrupt flag
-		handle_wire_pull(0);           // Wire 1 = PE4
+		handle_wire_pull(0);           // Wire 0 = PE4
 	}
 }
 
 void EXTI9_5_IRQHandler(void) {
 	if (EXTI->PR & EXTI_PR_PR5) {
 		EXTI->PR |= EXTI_PR_PR5;
-		handle_wire_pull(1);           // Wire 2 = PE5
+		handle_wire_pull(1);           // Wire 1 = PE5
 
 	}
 	if (EXTI->PR & EXTI_PR_PR6) {
 		EXTI->PR |= EXTI_PR_PR6;
-		handle_wire_pull(2);           // Wire 3 = PE6
+		handle_wire_pull(2);           // Wire 2 = PE6
 
 	}
 	if (EXTI->PR & EXTI_PR_PR7) {
 		EXTI->PR |= EXTI_PR_PR7;
-		handle_wire_pull(3);           // Wire 4 = PE7
+		handle_wire_pull(3);           // Wire 3 = PE7
 	}
 }
 
@@ -77,7 +77,7 @@ void handle_wire_pull(int wire_index) {
         correct_count++;
     }
     else {
-        reduce_time(5); // Reduce time by 5 seconds
+        reduce_time(15); // Reduce time by 3 seconds
         update_display(time_left);
     }
 
