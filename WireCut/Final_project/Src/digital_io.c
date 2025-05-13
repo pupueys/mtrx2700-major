@@ -3,7 +3,7 @@
 #include "timer.h"
 #include "seven_seg.h"
 #include "game_logic.h"
-volatile int time_left = 10;
+volatile int time_left = 30;
 
 // LED state set to static so that it is only accessible in this file
 static volatile uint8_t led_state;
@@ -24,12 +24,17 @@ void initialise_board(){
 
 	// Set pin PE 4,5,6 and 7 in pull down configuration to read 0 when pulled out
 	GPIOE->PUPDR &=
-	    ~((0b11 << (4 * 2)) | (0b11 << (5 * 2)) |      // clear old settings for PE4, PE5
-	      (0b11 << (6 * 2)) | (0b11 << (7 * 2)));      // and for PE6, PE7
+	    ~((0b11 << (4 * 2)) | (0b11 << (5 * 2)) |      // clear PE4, PE5
+	      (0b11 << (6 * 2)) | (0b11 << (7 * 2)));
 
 	GPIOE->PUPDR |=
-	     (0b10 << (4 * 2)) | (0b10 << (5 * 2)) |       // set 10 ==> pull-down
-	     (0b10 << (6 * 2)) | (0b10 << (7 * 2));        // for each pin
+	     (0b10 << (4 * 2)) | (0b10 << (5 * 2)) |       // set 10 for pull down config
+	     (0b10 << (6 * 2)) | (0b10 << (7 * 2));
+
+	// PC6 and PC7 as output for digit control
+	GPIOC->MODER &= ~(0b11 << (6*2) | 0b11 << (7*2));
+	GPIOC->MODER |=  (0b01 << (6*2) | 0b01 << (7*2));
+
 
     // Set LED pins to input for debugging
 	uint16_t *led_output_registers = ((uint16_t *)&(GPIOE->MODER)) + 1;
