@@ -15,5 +15,23 @@ const uint8_t digits[10] = {
 };
 
 void update_display(int val) {
-    GPIOD->ODR = (GPIOD->ODR & ~0xFF) | digits[val];
+    static int toggle = 0;
+    int tens = val / 10;
+    int ones = val % 10;
+
+    if (toggle == 0) {
+        // Show tens
+        GPIOD->ODR = (GPIOD->ODR & ~0xFF) | digits[tens];
+        // Activate digit 1 (PD7 low, PD6 high )
+        GPIOC->ODR |= (1 << 6);
+        GPIOC->ODR &= ~(1 << 7);
+    } else {
+        // Show ones
+        GPIOD->ODR = (GPIOD->ODR & ~0xFF) | digits[ones];
+        // Activate digit 2 (PD7 high, PD6 low )
+        GPIOC->ODR |= (1 << 7);
+        GPIOC->ODR &= ~(1 << 6);
+    }
+
+    toggle = !toggle;
 }
