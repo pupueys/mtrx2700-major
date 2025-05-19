@@ -29,25 +29,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  12 .ARM.attributes 00000030  00000000  00000000  000050a4  2**0
                   CONTENTS, READONLY
- 13 .debug_info   0000c70b  00000000  00000000  000050d4  2**0
+ 13 .debug_info   0000c6d0  00000000  00000000  000050d4  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 00002444  00000000  00000000  000117df  2**0
+ 14 .debug_abbrev 00002416  00000000  00000000  000117a4  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 00000a08  00000000  00000000  00013c28  2**3
+ 15 .debug_aranges 00000a08  00000000  00000000  00013bc0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 0000077e  00000000  00000000  00014630  2**0
+ 16 .debug_rnglists 0000077e  00000000  00000000  000145c8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  00031048  00000000  00000000  00014dae  2**0
+ 17 .debug_macro  00031048  00000000  00000000  00014d46  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   0000dfb9  00000000  00000000  00045df6  2**0
+ 18 .debug_line   0000dfb6  00000000  00000000  00045d8e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000b11bf  00000000  00000000  00053daf  2**0
+ 19 .debug_str    000b11bf  00000000  00000000  00053d44  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  00104f6e  2**0
+ 20 .comment      00000043  00000000  00000000  00104f03  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00002760  00000000  00000000  00104fb4  2**2
+ 21 .debug_frame  00002760  00000000  00000000  00104f48  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000008c  00000000  00000000  00107714  2**0
+ 22 .debug_line_str 0000008c  00000000  00000000  001076a8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -177,7 +177,7 @@ void clear_leds(uint8_t key) {
  800025a:	4603      	mov	r3, r0
  800025c:	71fb      	strb	r3, [r7, #7]
 
-	GPIOE->ODR &= !(1 << (8 + key));
+	GPIOE->ODR &= !(1 << (8 + key));  // Turn OFF LED corresponding to key
  800025e:	4b0b      	ldr	r3, [pc, #44]	@ (800028c <clear_leds+0x38>)
  8000260:	695b      	ldr	r3, [r3, #20]
  8000262:	79fa      	ldrb	r2, [r7, #7]
@@ -300,27 +300,29 @@ void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16
  8000322:	737b      	strb	r3, [r7, #13]
  8000324:	4613      	mov	r3, r2
  8000326:	80fb      	strh	r3, [r7, #6]
-	if (sample_value < threshold) {
+
+	if (sample_value < threshold) {				// checks if the value is under the threshold for "pressed"
  8000328:	89fa      	ldrh	r2, [r7, #14]
  800032a:	88fb      	ldrh	r3, [r7, #6]
  800032c:	429a      	cmp	r2, r3
  800032e:	d21a      	bcs.n	8000366 <key_press_logic+0x56>
+												// if pressed, sample_value is below the threshold
 
-		if (!piano->key_pressed) {
+		if (!piano->key_pressed) {				// case when key pressed
  8000330:	68bb      	ldr	r3, [r7, #8]
  8000332:	f893 304e 	ldrb.w	r3, [r3, #78]	@ 0x4e
  8000336:	2b00      	cmp	r3, #0
  8000338:	d11b      	bne.n	8000372 <key_press_logic+0x62>
 
-			piano->key_pressed = 1;
+		  piano->key_pressed = 1;
  800033a:	68bb      	ldr	r3, [r7, #8]
  800033c:	2201      	movs	r2, #1
  800033e:	f883 204e 	strb.w	r2, [r3, #78]	@ 0x4e
-			piano->key_clear = 1;
+		  piano->key_clear = 1;
  8000342:	68bb      	ldr	r3, [r7, #8]
  8000344:	2201      	movs	r2, #1
  8000346:	f883 204f 	strb.w	r2, [r3, #79]	@ 0x4f
-			set_leds(key);
+		  set_leds(key);
  800034a:	7b7b      	ldrb	r3, [r7, #13]
  800034c:	4618      	mov	r0, r3
  800034e:	f7ff ff69 	bl	8000224 <set_leds>
@@ -328,7 +330,7 @@ void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16
  8000352:	f000 fce3 	bl	8000d1c <enable_timer2_interrupt>
 		  enable_timer3_interrupt();
  8000356:	f000 fd13 	bl	8000d80 <enable_timer3_interrupt>
-			gameplay_logic(piano, key);			// when key pressed, progress to game logic
+		  gameplay_logic(piano, key);			// when key pressed, progress to game logic
  800035a:	7b7b      	ldrb	r3, [r7, #13]
  800035c:	4619      	mov	r1, r3
  800035e:	68b8      	ldr	r0, [r7, #8]
@@ -396,6 +398,7 @@ void gameplay_logic(Steinway* piano, uint8_t key) {
  80003bc:	2b00      	cmp	r3, #0
  80003be:	d06a      	beq.n	8000496 <gameplay_logic+0x11a>
 
+		// flag the key as pressed
 		piano->key_states[key] = 1;
  80003c0:	78fb      	ldrb	r3, [r7, #3]
  80003c2:	687a      	ldr	r2, [r7, #4]
@@ -2154,20 +2157,20 @@ void enable_timer2_interrupt(void) {
 	//  otherwise can lead to strange behaviour
 	__disable_irq();
 
-	// Configure Timer 3 for periodic interrupt
-	TIM2->PSC = 7999;              	// Timer set to 100Hz (8MHz)
+	// Configure Timer 3 for 2s interrupt
+	TIM2->PSC = 7999;              		// Timer set to 100Hz (8MHz)
  8000d24:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  8000d28:	f641 723f 	movw	r2, #7999	@ 0x1f3f
  8000d2c:	629a      	str	r2, [r3, #40]	@ 0x28
-	TIM2->ARR = 1999;
+	TIM2->ARR = 1999;					// 2s timer
  8000d2e:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  8000d32:	f240 72cf 	movw	r2, #1999	@ 0x7cf
  8000d36:	62da      	str	r2, [r3, #44]	@ 0x2c
-	TIM2->CNT = 0;         // Reset counter
+	TIM2->CNT = 0;         				// Reset counter
  8000d38:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  8000d3c:	2200      	movs	r2, #0
  8000d3e:	625a      	str	r2, [r3, #36]	@ 0x24
-	TIM2->SR = 0;          // Clear status register
+	TIM2->SR = 0;          				// Clear status register
  8000d40:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  8000d44:	2200      	movs	r2, #0
  8000d46:	611a      	str	r2, [r3, #16]
@@ -2216,11 +2219,11 @@ void enable_timer3_interrupt(void) {
 	//  otherwise can lead to strange behaviour
 	__disable_irq();
     // Configure Timer 3 for periodic interrupt
-    TIM3->PSC = 7999;              // Timer increments every 1 ms
+    TIM3->PSC = 7999;              		// Timer set to 100Hz
  8000d88:	4b0f      	ldr	r3, [pc, #60]	@ (8000dc8 <enable_timer3_interrupt+0x48>)
  8000d8a:	f641 723f 	movw	r2, #7999	@ 0x1f3f
  8000d8e:	629a      	str	r2, [r3, #40]	@ 0x28
-    TIM3->ARR = 999;                      // The reload by default is set at 1 so that is not noticible
+    TIM3->ARR = 999;                    // 1s timer
  8000d90:	4b0d      	ldr	r3, [pc, #52]	@ (8000dc8 <enable_timer3_interrupt+0x48>)
  8000d92:	f240 32e7 	movw	r2, #999	@ 0x3e7
  8000d96:	62da      	str	r2, [r3, #44]	@ 0x2c
@@ -2268,14 +2271,14 @@ void TIM2_IRQHandler(void) {
  8000dd6:	f003 0301 	and.w	r3, r3, #1
  8000dda:	2b00      	cmp	r3, #0
  8000ddc:	d00b      	beq.n	8000df6 <TIM2_IRQHandler+0x2a>
-        TIM2->SR &= ~TIM_SR_UIF;
+        TIM2->SR &= ~TIM_SR_UIF;		// clear interrupt flags
  8000dde:	f04f 4380 	mov.w	r3, #1073741824	@ 0x40000000
  8000de2:	691b      	ldr	r3, [r3, #16]
  8000de4:	f04f 4280 	mov.w	r2, #1073741824	@ 0x40000000
  8000de8:	f023 0301 	bic.w	r3, r3, #1
  8000dec:	6113      	str	r3, [r2, #16]
 
-        piano.key_valid = 1;
+        piano.key_valid = 1;			// key press is now ready to be read
  8000dee:	4b04      	ldr	r3, [pc, #16]	@ (8000e00 <TIM2_IRQHandler+0x34>)
  8000df0:	2201      	movs	r2, #1
  8000df2:	f883 2050 	strb.w	r2, [r3, #80]	@ 0x50
@@ -2307,7 +2310,7 @@ void TIM3_IRQHandler(void) {
  8000e1c:	f023 0301 	bic.w	r3, r3, #1
  8000e20:	6113      	str	r3, [r2, #16]
 
-        piano.key_pressed = 0;
+        piano.key_pressed = 0;			// key is no longer pressed
  8000e22:	4b13      	ldr	r3, [pc, #76]	@ (8000e70 <TIM3_IRQHandler+0x6c>)
  8000e24:	2200      	movs	r2, #0
  8000e26:	f883 204e 	strb.w	r2, [r3, #78]	@ 0x4e
@@ -2318,6 +2321,7 @@ void TIM3_IRQHandler(void) {
  8000e30:	2b00      	cmp	r3, #0
  8000e32:	d016      	beq.n	8000e62 <TIM3_IRQHandler+0x5e>
 
+        	// clears the state of the key press
         	for (int i=0; i < 5; i++) {
  8000e34:	2300      	movs	r3, #0
  8000e36:	607b      	str	r3, [r7, #4]

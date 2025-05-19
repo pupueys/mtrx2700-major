@@ -1,4 +1,4 @@
-../Core/Src/game_logic.c:21:6:HAL_TSC_ConvCpltCallback	4
-../Core/Src/game_logic.c:42:6:key_press_logic	3
-../Core/Src/game_logic.c:62:6:gameplay_logic	9
-../Core/Src/game_logic.c:124:6:completion_function	1
+../Core/Src/game_logic.c:23:6:HAL_TSC_ConvCpltCallback	4
+../Core/Src/game_logic.c:44:6:key_press_logic	3
+../Core/Src/game_logic.c:66:6:gameplay_logic	9
+../Core/Src/game_logic.c:129:6:completion_function	1
