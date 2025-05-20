@@ -105,7 +105,7 @@ void handle_key(SerialPort *serial_port) {
 
 		case 'd':
 
-			motor2_(enableFORWARD);
+			motor2_enable(FORWARD);
 			break;
 
 		case 'a':
