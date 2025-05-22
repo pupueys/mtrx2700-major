@@ -1,0 +1,3 @@
+"./Src/game_3.o"
+"./Src/main.o"
+"./Startup/startup_stm32f303vctx.o"
