@@ -1,7 +1,7 @@
 #include <seven_seg.h>
 #include "stm32f303xc.h"
 
-const uint8_t digits[10] = {
+const uint8_t digits[11] = {
 		0b00111111, // 0
 		0b00000110, // 1
 		0b01011011, // 2
@@ -11,7 +11,9 @@ const uint8_t digits[10] = {
 		0b01111101, // 6
 		0b00000111, // 7
 		0b01111111, // 8
-		0b11101111   // 9
+		0b11101111, // 9
+		0b00000000  // turn off
+
 };
 
 void update_display(int val) {
@@ -22,13 +24,13 @@ void update_display(int val) {
     if (toggle == 0) {
         // Show tens
         GPIOD->ODR = (GPIOD->ODR & ~0xFF) | digits[tens];
-        // Activate digit 1 (PD7 low, PD6 high )
+        // Activate digit 1 (PC7 low, PC6 high )
         GPIOC->ODR |= (1 << 6);
         GPIOC->ODR &= ~(1 << 7);
     } else {
         // Show ones
         GPIOD->ODR = (GPIOD->ODR & ~0xFF) | digits[ones];
-        // Activate digit 2 (PD7 high, PD6 low )
+        // Activate digit 2 (PC7 high, PC6 low )
         GPIOC->ODR |= (1 << 7);
         GPIOC->ODR &= ~(1 << 6);
     }

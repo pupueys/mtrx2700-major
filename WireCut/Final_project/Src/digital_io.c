@@ -22,18 +22,22 @@ void initialise_board(){
 	*seg_registers = 0x5555;
 
 
-	// Set pin PE 4,5,6 and 7 in pull down configuration to read 0 when pulled out
+	// Set pin PE 4,5,6,7,8, and 9 in pull down configuration to read 0 when pulled out
 	GPIOE->PUPDR &=
-	    ~((0b11 << (4 * 2)) | (0b11 << (5 * 2)) |      // clear PE4, PE5
-	      (0b11 << (6 * 2)) | (0b11 << (7 * 2)));
+	    ~((0b11 << (4 * 2)) | (0b11 << (5 * 2)) |      // clear PE4,5,6,7,8 and 9
+	      (0b11 << (6 * 2)) | (0b11 << (7 * 2)) |
+		  (0b11 << (8 * 2)) | (0b11 << (9 * 2)) );
 
 	GPIOE->PUPDR |=
-	     (0b10 << (4 * 2)) | (0b10 << (5 * 2)) |       // set 10 for pull down config
-	     (0b10 << (6 * 2)) | (0b10 << (7 * 2));
+	    (0b10 << (4 * 2)) | (0b10 << (5 * 2)) |       // 10 for pull down configuration
+	    (0b10 << (6 * 2)) | (0b10 << (7 * 2)) |
+	    (0b10 << (8 * 2)) | (0b10 << (9 * 2));
 
-	// PC6 and PC7 as output for digit control
-	GPIOC->MODER &= ~(0b11 << (6*2) | 0b11 << (7*2));
-	GPIOC->MODER |=  (0b01 << (6*2) | 0b01 << (7*2));
+	// PC6 and PC7 as output for digit control and PC 8 as output for buzzer
+	GPIOC->MODER &= ~(0b11 << (6*2) | 0b11 << (7*2) | 0b11 << (8*2) );
+	GPIOC->MODER |=  (0b01 << (6*2) | 0b01 << (7*2) | 0b01 << (8*2) );
+
+
 
 
     // Set LED pins to input for debugging
@@ -47,10 +51,13 @@ void set_led_state(uint8_t state) {                // pass in a uint8_t value wh
 	*((uint8_t*)&(GPIOE->ODR) + 1) = led_state;    // update the LED state to the ODR
 }
 
+void buzzer_on(){
+    GPIOC->ODR |= (1 << 8);                        // set PC8 as high for buzzer on
+}
 
 void start_game(){
-	enable_clocks();
-	initialise_board();
+    enable_clocks();
+    initialise_board();
     enable_7seg_interrupts();
     enable_wire_interrupts();
 }
