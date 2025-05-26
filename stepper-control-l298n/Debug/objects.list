@@ -1,0 +1,8 @@
+"./Src/digitalio.o"
+"./Src/main.o"
+"./Src/motors.o"
+"./Src/serial.o"
+"./Src/syscalls.o"
+"./Src/sysmem.o"
+"./Src/timer.o"
+"./Startup/startup_stm32f303vctx.o"

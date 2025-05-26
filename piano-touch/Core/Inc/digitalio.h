@@ -29,7 +29,7 @@
 void enable_clocks(void);
 
 // initialise_leds: Initialises onboard LEDs
-void initialise_leds(void);
+void initialise_gpio(void);
 
 // set_leds: Sets the LEDs when given a certain key
 // Input: key that has been pressed
@@ -38,5 +38,8 @@ void set_leds(uint8_t key);
 // clear_leds:Clears the LED for a certain key
 // Input: key that has been "let go" (no longer pressed(
 void clear_leds(uint8_t key);
+
+// game_wait: waits for input signal to start the game
+void game_wait();
 
 #endif

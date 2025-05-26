@@ -1,4 +1,9 @@
-../Core/Src/game_logic.c:23:6:HAL_TSC_ConvCpltCallback	24	static
-../Core/Src/game_logic.c:44:6:key_press_logic	24	static
-../Core/Src/game_logic.c:66:6:gameplay_logic	64	static
-../Core/Src/game_logic.c:129:6:completion_function	4	static
+../Core/Inc/core_cm4.h:1688:22:__NVIC_EnableIRQ	16	static
+../Core/Inc/core_cm4.h:1816:22:__NVIC_SetPriority	16	static
+../Core/Src/game_logic.c:41:6:HAL_TSC_ConvCpltCallback	32	static
+../Core/Src/game_logic.c:62:6:key_press_logic	24	static
+../Core/Src/game_logic.c:110:6:gameplay_logic	64	static
+../Core/Src/game_logic.c:175:6:SerialInitialise	24	static,ignoring_inline_asm
+../Core/Src/game_logic.c:239:6:USART1_IRQHandler	8	static
+../Core/Src/game_logic.c:264:6:tx_char	24	static,ignoring_inline_asm
+../Core/Src/game_logic.c:280:6:completion_function	4	static

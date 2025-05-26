@@ -7,8 +7,8 @@ void enable_timer2_interrupt(void) {
 	__disable_irq();
 
 	// Configure Timer 3 for 2s interrupt
-	TIM2->PSC = 7999;              		// Timer set to 100Hz (8MHz)
-	TIM2->ARR = 1999;					// 2s timer
+	TIM2->PSC = 47999;              		// Timer set to 100Hz (8MHz)
+	TIM2->ARR = 999;					// 2s timer
 	TIM2->CNT = 0;         				// Reset counter
 	TIM2->SR = 0;          				// Clear status register
 	TIM2->DIER |= TIM_DIER_UIE;         // Enable update interrupt
@@ -26,7 +26,7 @@ void enable_timer3_interrupt(void) {
 	//  otherwise can lead to strange behaviour
 	__disable_irq();
     // Configure Timer 3 for periodic interrupt
-    TIM3->PSC = 7999;              		// Timer set to 100Hz
+    TIM3->PSC = 47999;              		// Timer set to 100Hz
     TIM3->ARR = 999;                    // 1s timer
     TIM3->DIER |= TIM_DIER_UIE;         // Enable update interrupt
     TIM3->CR1 |= TIM_CR1_CEN;           // Start the timer

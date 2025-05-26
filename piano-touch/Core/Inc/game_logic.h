@@ -70,11 +70,39 @@ typedef struct {
 	uint8_t key_valid;							// flag to say when a key press is ready to be read
 } Steinway;
 
+typedef struct SerialPort {
+    USART_TypeDef *UART;
+    GPIO_TypeDef *GPIO;
+    volatile uint32_t MaskAPB2ENR;
+    volatile uint32_t MaskAPB1ENR;
+    volatile uint32_t MaskAHBENR;
+    volatile uint32_t SerialPinModeValue;
+    volatile uint32_t SerialPinSpeedValue;
+    volatile uint32_t SerialPinAlternatePinValueLow;
+    volatile uint32_t SerialPinAlternatePinValueHigh;
+    volatile uint8_t TxChar;
+    volatile uint32_t UART_IRQn;
+    volatile uint8_t  TransmissionState;
+
+    Steinway* Piano;
+    uint8_t Key;
+} SerialPort;
+
 /*************/
 /* EXTERNS */
 /*************/
 extern volatile uint8_t game_complete;
 extern Steinway piano;
+
+extern SerialPort USART1_PORT;
+
+enum {
+    BAUD_9600,
+    BAUD_19200,
+    BAUD_38400,
+    BAUD_57600,
+    BAUD_115200
+};
 
 /*************/
 /* FUNCTIONS */
@@ -91,7 +119,7 @@ void HAL_TSC_ConvCpltCallback(TSC_HandleTypeDef* htsc);
  * - key = key that was "pressed"/key to check
  * - threshold = known threshold for when the key is pressed
  */
-void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16_t threshold);
+void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16_t threshold, SerialPort *serial_port);
 
 // gameplay_logic: Logic for the piano gameplay; checks if sequence of keys is correct.
 // inputs:
@@ -100,8 +128,26 @@ void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16
  */
 void gameplay_logic(Steinway* piano, uint8_t key);
 
-// completion_function: Function for when the game is finished
-void completion_function(void);
+// SerialInitialise: Initialises serial ports
+// inputs:
+/* - baudRate: Baud rate for serial communication
+ * - serial_port: Port for serial communication (USART1)
+ */
+void SerialInitialise(uint32_t baudRate, SerialPort *serial_port);
 
+// USART1_EXTI25_IRQHandler: Serial interrupt handler
+void USART1_EXTI25_IRQHandler(void);
+
+// tx_char: Outputs one ASCII character over serial
+// inputs:
+/* - character: ASCII character to be transmitted
+ * - serial_port: Serial port to transmit over; USART1 for this program
+ * - piano: Piano struct which stores the piano data
+ * - key: Corresponding key to be transmitted
+ */
+void tx_char(uint8_t character, SerialPort *serial_port, Steinway* piano, uint8_t key);
+
+// completion_function: Sends signal to main board to signify game is complete
+void completion_function(void);
 
 #endif

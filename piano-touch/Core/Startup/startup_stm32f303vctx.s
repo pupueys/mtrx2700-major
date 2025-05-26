@@ -61,6 +61,7 @@ defined in linker script */
 Reset_Handler:
   ldr   sp, =_estack    /* Atollic update: set stack pointer */
   
+
 /* Call the clock system initialization function.*/
     bl  SystemInit
 

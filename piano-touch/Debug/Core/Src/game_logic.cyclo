@@ -1,4 +1,9 @@
-../Core/Src/game_logic.c:23:6:HAL_TSC_ConvCpltCallback	4
-../Core/Src/game_logic.c:44:6:key_press_logic	3
-../Core/Src/game_logic.c:66:6:gameplay_logic	9
-../Core/Src/game_logic.c:129:6:completion_function	1
+../Core/Inc/core_cm4.h:1688:22:__NVIC_EnableIRQ	2
+../Core/Inc/core_cm4.h:1816:22:__NVIC_SetPriority	2
+../Core/Src/game_logic.c:41:6:HAL_TSC_ConvCpltCallback	4
+../Core/Src/game_logic.c:62:6:key_press_logic	9
+../Core/Src/game_logic.c:110:6:gameplay_logic	9
+../Core/Src/game_logic.c:175:6:SerialInitialise	6
+../Core/Src/game_logic.c:239:6:USART1_IRQHandler	8
+../Core/Src/game_logic.c:264:6:tx_char	1
+../Core/Src/game_logic.c:280:6:completion_function	1

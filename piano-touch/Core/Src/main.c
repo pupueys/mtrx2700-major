@@ -18,18 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "digitalio.h"
 #include "timer.h"
-#include "serial.h"
 #include "game_logic.h"
 
 
@@ -65,8 +58,6 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-SPI_HandleTypeDef hspi1;
-
 TSC_HandleTypeDef htsc;
 
 PCD_HandleTypeDef hpcd_USB_FS;
@@ -79,7 +70,6 @@ PCD_HandleTypeDef hpcd_USB_FS;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_SPI1_Init(void);
 static void MX_USB_PCD_Init(void);
 static void MX_TSC_Init(void);
 /* USER CODE BEGIN PFP */
@@ -110,6 +100,11 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 
+  /* UNCOMMENT THIS FOR GAME INTEGRATION
+  KEEP COMMENTED TO PLAY INDIVIDUAL GAME*/
+
+  // game_wait();
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -118,7 +113,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  SerialInitialise(BAUD_115200, &USART1_PORT, 0x00);
+  SerialInitialise(BAUD_115200, &USART1_PORT);
 
   /* USER CODE END Init */
 
@@ -131,14 +126,11 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_SPI1_Init();
   MX_USB_PCD_Init();
   MX_TSC_Init();
-
-  enable_clocks();
-  initialise_leds();
   /* USER CODE BEGIN 2 */
-
+  initialise_gpio();
+  enable_clocks();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -219,46 +211,6 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief SPI1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_SPI1_Init(void)
-{
-
-  /* USER CODE BEGIN SPI1_Init 0 */
-
-  /* USER CODE END SPI1_Init 0 */
-
-  /* USER CODE BEGIN SPI1_Init 1 */
-
-  /* USER CODE END SPI1_Init 1 */
-  /* SPI1 parameter configuration*/
-  hspi1.Instance = SPI1;
-  hspi1.Init.Mode = SPI_MODE_MASTER;
-  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi1.Init.DataSize = SPI_DATASIZE_4BIT;
-  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
-  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi1.Init.CRCPolynomial = 7;
-  hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-  hspi1.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
-  if (HAL_SPI_Init(&hspi1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN SPI1_Init 2 */
-
-  /* USER CODE END SPI1_Init 2 */
-
-}
-
-/**
   * @brief TSC Initialization Function
   * @param None
   * @retval None
@@ -288,12 +240,12 @@ static void MX_TSC_Init(void)
   htsc.Init.SynchroPinPolarity = TSC_SYNC_POLARITY_FALLING;
   htsc.Init.AcquisitionMode = TSC_ACQ_MODE_NORMAL;
   htsc.Init.MaxCountInterrupt = DISABLE;
-  htsc.Init.ChannelIOs = TSC_GROUP1_IO1|TSC_GROUP1_IO3|TSC_GROUP3_IO2|TSC_GROUP3_IO4
-                    |TSC_GROUP5_IO2|TSC_GROUP5_IO4|TSC_GROUP6_IO2|TSC_GROUP6_IO4
-                    |TSC_GROUP8_IO2|TSC_GROUP8_IO4;
+  htsc.Init.ChannelIOs = TSC_GROUP1_IO3|TSC_GROUP1_IO4|TSC_GROUP3_IO3|TSC_GROUP3_IO4
+                    |TSC_GROUP5_IO2|TSC_GROUP5_IO4|TSC_GROUP6_IO3|TSC_GROUP6_IO4
+                    |TSC_GROUP8_IO3|TSC_GROUP8_IO4;
   htsc.Init.ShieldIOs = 0;
-  htsc.Init.SamplingIOs = TSC_GROUP1_IO2|TSC_GROUP3_IO3|TSC_GROUP5_IO3|TSC_GROUP6_IO3
-                    |TSC_GROUP8_IO3;
+  htsc.Init.SamplingIOs = TSC_GROUP1_IO2|TSC_GROUP3_IO2|TSC_GROUP5_IO3|TSC_GROUP6_IO2
+                    |TSC_GROUP8_IO2;
   if (HAL_TSC_Init(&htsc) != HAL_OK)
   {
     Error_Handler();
@@ -378,6 +330,20 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA0 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA5 PA6 PA7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
   HAL_NVIC_SetPriority(EXTI2_TSC_IRQn, 0, 0);

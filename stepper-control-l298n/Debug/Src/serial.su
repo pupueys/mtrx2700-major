@@ -1,0 +1,6 @@
+../Inc/core_cm4.h:1688:22:__NVIC_EnableIRQ	16	static
+../Inc/core_cm4.h:1816:22:__NVIC_SetPriority	16	static
+../Src/serial.c:18:6:SerialInitialise	24	static,ignoring_inline_asm
+../Src/serial.c:82:6:USART1_EXTI25_IRQHandler	16	static
+../Src/serial.c:96:6:handle_key	24	static
+../Src/serial.c:152:9:get_last_key	4	static

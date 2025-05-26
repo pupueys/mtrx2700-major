@@ -1,4 +1,5 @@
 ../Core/Src/digitalio.c:4:6:enable_clocks	1
-../Core/Src/digitalio.c:13:6:initialise_leds	1
-../Core/Src/digitalio.c:19:6:set_leds	1
-../Core/Src/digitalio.c:25:6:clear_leds	1
+../Core/Src/digitalio.c:10:6:initialise_gpio	1
+../Core/Src/digitalio.c:23:6:set_leds	1
+../Core/Src/digitalio.c:29:6:clear_leds	1
+../Core/Src/digitalio.c:34:6:game_wait	2

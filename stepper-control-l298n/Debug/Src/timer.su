@@ -1,0 +1,12 @@
+../Inc/core_cm4.h:1688:22:__NVIC_EnableIRQ	16	static
+../Inc/core_cm4.h:1816:22:__NVIC_SetPriority	16	static
+../Src/timer.c:22:6:motor1_enable	16	static
+../Src/timer.c:29:6:motor2_enable	16	static
+../Src/timer.c:36:6:motor1_disable	4	static
+../Src/timer.c:43:6:motor2_disable	4	static
+../Src/timer.c:49:6:set_last_press_time	16	static
+../Src/timer.c:53:10:get_time	4	static
+../Src/timer.c:58:6:enable_timer3_interrupt	8	static,ignoring_inline_asm
+../Src/timer.c:79:6:enable_timer2_interrupt	8	static,ignoring_inline_asm
+../Src/timer.c:96:6:TIM3_IRQHandler	16	static
+../Src/timer.c:143:6:TIM2_IRQHandler	16	static
