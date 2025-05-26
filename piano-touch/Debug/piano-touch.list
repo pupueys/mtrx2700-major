@@ -456,6 +456,7 @@ void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16
 			  enable_timer3_interrupt();
  800042c:	f000 fd86 	bl	8000f3c <enable_timer3_interrupt>
 
+			  // check which key was pressed
 			  switch(key) {
  8000430:	7b7b      	ldrb	r3, [r7, #13]
  8000432:	2b04      	cmp	r3, #4
@@ -469,7 +470,7 @@ void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16
  800044c:	08000489 	.word	0x08000489
 
 			  case CKEY:
-				  tx_char(0x43, serial_port, piano, key);
+				  tx_char(0x43, serial_port, piano, key);	// output 'C'
  8000450:	7b7b      	ldrb	r3, [r7, #13]
  8000452:	68ba      	ldr	r2, [r7, #8]
  8000454:	69b9      	ldr	r1, [r7, #24]
@@ -479,7 +480,7 @@ void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16
  800045c:	e022      	b.n	80004a4 <key_press_logic+0xd4>
 
 			  case DKEY:
-				  tx_char(0x44, serial_port, piano, key);
+				  tx_char(0x44, serial_port, piano, key);	// output 'D'
  800045e:	7b7b      	ldrb	r3, [r7, #13]
  8000460:	68ba      	ldr	r2, [r7, #8]
  8000462:	69b9      	ldr	r1, [r7, #24]
@@ -489,7 +490,7 @@ void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16
  800046a:	e01b      	b.n	80004a4 <key_press_logic+0xd4>
 
 			  case EKEY:
-				  tx_char(0x45, serial_port, piano, key);
+				  tx_char(0x45, serial_port, piano, key);	// output 'E'
  800046c:	7b7b      	ldrb	r3, [r7, #13]
  800046e:	68ba      	ldr	r2, [r7, #8]
  8000470:	69b9      	ldr	r1, [r7, #24]
@@ -499,7 +500,7 @@ void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16
  8000478:	e014      	b.n	80004a4 <key_press_logic+0xd4>
 
 			  case FKEY:
-				  tx_char(0x46, serial_port, piano, key);
+				  tx_char(0x46, serial_port, piano, key);	// output 'F'
  800047a:	7b7b      	ldrb	r3, [r7, #13]
  800047c:	68ba      	ldr	r2, [r7, #8]
  800047e:	69b9      	ldr	r1, [r7, #24]
@@ -509,7 +510,7 @@ void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16
  8000486:	e00d      	b.n	80004a4 <key_press_logic+0xd4>
 
 			  case GKEY:
-				  tx_char(0x47, serial_port, piano, key);
+				  tx_char(0x47, serial_port, piano, key);	// output 'G'
  8000488:	7b7b      	ldrb	r3, [r7, #13]
  800048a:	68ba      	ldr	r2, [r7, #8]
  800048c:	69b9      	ldr	r1, [r7, #24]
