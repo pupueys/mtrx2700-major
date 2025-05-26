@@ -6,15 +6,15 @@ void enable_clocks(void) {
 
 // Initialize the discovery board I/O (outputs and analog inputs)
 void initialise_board(void) {
-    // Configure LEDs (PE8-PE15) as outputs
-    uint16_t *led_output_registers = ((uint16_t *)&(GPIOE->MODER)) + 1;
-    *led_output_registers = 0x5555;
+	// Configure LEDs (PE8-PE15) as outputs
+	    uint16_t *led_output_registers = ((uint16_t *)&(GPIOE->MODER)) + 1;
+	    *led_output_registers = 0x5555;
 
-    // Configure PA1, PA2, and PA3 as analog inputs for voltage readings
+    // Configure PC1, PC2, and PC3 as analog inputs for voltage readings
     // Mode 11 = Analog mode for each pin
-    GPIOA->MODER |= GPIO_MODER_MODER1_0 | GPIO_MODER_MODER1_1;  // PA1 (Channel 2)
-    GPIOA->MODER |= GPIO_MODER_MODER2_0 | GPIO_MODER_MODER2_1;  // PA2 (Channel 3)
-    GPIOA->MODER |= GPIO_MODER_MODER3_0 | GPIO_MODER_MODER3_1;  // PA3 (Channel 4)
+    GPIOC->MODER |= GPIO_MODER_MODER1_0 | GPIO_MODER_MODER1_1;  // PC1 (Channel 7)
+    GPIOC->MODER |= GPIO_MODER_MODER2_0 | GPIO_MODER_MODER2_1;  // PC2 (Channel 8)
+    GPIOC->MODER |= GPIO_MODER_MODER3_0 | GPIO_MODER_MODER3_1;  // PC3 (Channel 9)
 }
 
 /******************************************************************************

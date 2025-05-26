@@ -25,9 +25,9 @@
 #define TOLERANCE_ADC       MV_TO_ADC(VOLTAGE_TOLERANCE_MV)
 
 // ADC channel definitions
-#define VOLTAGE1_CHANNEL    2     // First ADC channel (PA1)
-#define VOLTAGE2_CHANNEL    3     // Second ADC channel (PA2)
-#define VOLTAGE3_CHANNEL    4     // Third ADC channel (PA3)
+#define VOLTAGE1_CHANNEL    7     // First ADC channel (PC1)
+#define VOLTAGE2_CHANNEL    8     // Second ADC channel (PC2)
+#define VOLTAGE3_CHANNEL    9     // Third ADC channel (PC3)
 
 // LED definitions (PE8, PE9, PE10 on STM32F303 Discovery board)
 #define LED1_PIN            8     // PE8
