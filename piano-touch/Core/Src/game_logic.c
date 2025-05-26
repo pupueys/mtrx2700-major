@@ -75,26 +75,27 @@ void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16
 			  enable_timer2_interrupt();
 			  enable_timer3_interrupt();
 
+			  // check which key was pressed
 			  switch(key) {
 
 			  case CKEY:
-				  tx_char(0x43, serial_port, piano, key);
+				  tx_char(0x43, serial_port, piano, key);	// output 'C'
 				  break;
 
 			  case DKEY:
-				  tx_char(0x44, serial_port, piano, key);
+				  tx_char(0x44, serial_port, piano, key);	// output 'D'
 				  break;
 
 			  case EKEY:
-				  tx_char(0x45, serial_port, piano, key);
+				  tx_char(0x45, serial_port, piano, key);	// output 'E'
 				  break;
 
 			  case FKEY:
-				  tx_char(0x46, serial_port, piano, key);
+				  tx_char(0x46, serial_port, piano, key);	// output 'F'
 				  break;
 
 			  case GKEY:
-				  tx_char(0x47, serial_port, piano, key);
+				  tx_char(0x47, serial_port, piano, key);	// output 'G'
 				  break;
 			  }
 			}

@@ -34,6 +34,8 @@
 int main(void)
 {
 
+
+	// initialisation
 	enable_clocks();
 	initialise_board();
 	enable_timer2_interrupt();

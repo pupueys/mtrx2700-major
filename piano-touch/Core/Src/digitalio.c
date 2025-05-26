@@ -33,6 +33,7 @@ void clear_leds(uint8_t key) {
 
 void game_wait(void) {
 
+	// while GPIO is low
 	while((GPIOC->IDR & (1 << 8)) == 0) {
 
 	}

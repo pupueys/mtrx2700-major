@@ -1,3 +1,13 @@
+/*
+  **********************************************************************************
+ * 									serial.h										*
+ * 																					*
+ * 				Contains all functions related to serial function					*
+ *																					*
+ * 																					*
+  **********************************************************************************
+ */
+
 #ifndef SERIAL_H
 #define SERIAL_H
 
@@ -57,6 +67,7 @@ void USART1_EXTI25_IRQHandler(void);
 	 * being able to receive, while the other buffer can be used */
 void handle_key(uint8_t pressed_key);
 
+// get_last_key:
 uint8_t get_last_key(void);
 
 #endif
