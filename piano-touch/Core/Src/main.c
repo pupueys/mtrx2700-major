@@ -24,7 +24,7 @@
 #include "digitalio.h"
 #include "timer.h"
 #include "game_logic.h"
-
+#include "serial.h"
 
 /* USER CODE END Includes */
 
@@ -103,7 +103,7 @@ int main(void)
   /* UNCOMMENT THIS FOR GAME INTEGRATION
   KEEP COMMENTED TO PLAY INDIVIDUAL GAME*/
 
-  // game_wait();
+   game_wait();
 
   /* USER CODE END 1 */
 
@@ -128,6 +128,9 @@ int main(void)
   MX_GPIO_Init();
   MX_USB_PCD_Init();
   MX_TSC_Init();
+
+ // game_wait();
+
   /* USER CODE BEGIN 2 */
   initialise_gpio();
   enable_clocks();
@@ -142,6 +145,7 @@ int main(void)
 	if (HAL_TSC_Start_IT(&htsc) != HAL_OK) {
 		Error_Handler();
 	}
+
 
   while (1)
   {

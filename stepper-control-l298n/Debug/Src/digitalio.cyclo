@@ -1,2 +1,2 @@
 ../Src/digitalio.c:3:6:enable_clocks	1
-../Src/digitalio.c:15:6:initialise_board	1
+../Src/digitalio.c:14:6:initialise_board	1

@@ -1,0 +1,7 @@
+../Src/motors.c:38:6:motor1_enable	1
+../Src/motors.c:45:6:motor2_enable	1
+../Src/motors.c:52:6:motor1_disable	1
+../Src/motors.c:59:6:motor2_disable	1
+../Src/motors.c:65:6:set_last_press_time	1
+../Src/motors.c:69:6:motor_logic	11
+../Src/motors.c:123:6:motor_idle	17

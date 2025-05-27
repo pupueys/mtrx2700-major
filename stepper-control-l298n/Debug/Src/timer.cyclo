@@ -1,12 +1,7 @@
 ../Inc/core_cm4.h:1688:22:__NVIC_EnableIRQ	2
 ../Inc/core_cm4.h:1816:22:__NVIC_SetPriority	2
-../Src/timer.c:22:6:motor1_enable	1
-../Src/timer.c:29:6:motor2_enable	1
-../Src/timer.c:36:6:motor1_disable	1
-../Src/timer.c:43:6:motor2_disable	1
-../Src/timer.c:49:6:set_last_press_time	1
-../Src/timer.c:53:10:get_time	1
-../Src/timer.c:58:6:enable_timer3_interrupt	1
-../Src/timer.c:79:6:enable_timer2_interrupt	1
-../Src/timer.c:96:6:TIM3_IRQHandler	6
-../Src/timer.c:143:6:TIM2_IRQHandler	18
+../Src/timer.c:5:10:get_time	1
+../Src/timer.c:9:6:enable_timer3_interrupt	1
+../Src/timer.c:27:6:enable_timer2_interrupt	1
+../Src/timer.c:44:6:TIM3_IRQHandler	2
+../Src/timer.c:54:6:TIM2_IRQHandler	2

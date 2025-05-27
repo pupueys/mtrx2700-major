@@ -1,0 +1,5 @@
+../Core/Inc/core_cm4.h:1688:22:__NVIC_EnableIRQ	2
+../Core/Inc/core_cm4.h:1816:22:__NVIC_SetPriority	2
+../Core/Src/serial.c:24:6:SerialInitialise	6
+../Core/Src/serial.c:88:6:USART1_IRQHandler	8
+../Core/Src/serial.c:113:6:tx_char	1

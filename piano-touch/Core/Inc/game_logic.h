@@ -46,8 +46,11 @@
 /************/
 /* TYPEDEFS */
 /************/
+
+//struct SerialPort;
+
 // Key struct
-typedef struct {
+typedef struct PianoKey {
 	uint32_t group;								// value to distinguish the touch sensing group
 	uint16_t threshold;							// threshold value for when key is pressed
 	uint8_t value;								// the set value of the key (C = 0, D = 1, E = 2, F = 3, G = 4)
@@ -55,7 +58,7 @@ typedef struct {
 } PianoKey;
 
 // Piano struct
-typedef struct {
+typedef struct Steinway {
 	PianoKey keys[KEY_COUNT];					// array of the piano keys
 	uint8_t key_states[KEY_COUNT];				/* array of the "pressed" state of the piano keys
 												 * of the form [C, D, E, F, G]. If the entry is 1, the key is
@@ -70,39 +73,11 @@ typedef struct {
 	uint8_t key_valid;							// flag to say when a key press is ready to be read
 } Steinway;
 
-typedef struct SerialPort {
-    USART_TypeDef *UART;
-    GPIO_TypeDef *GPIO;
-    volatile uint32_t MaskAPB2ENR;
-    volatile uint32_t MaskAPB1ENR;
-    volatile uint32_t MaskAHBENR;
-    volatile uint32_t SerialPinModeValue;
-    volatile uint32_t SerialPinSpeedValue;
-    volatile uint32_t SerialPinAlternatePinValueLow;
-    volatile uint32_t SerialPinAlternatePinValueHigh;
-    volatile uint8_t TxChar;
-    volatile uint32_t UART_IRQn;
-    volatile uint8_t  TransmissionState;
-
-    Steinway* Piano;
-    uint8_t Key;
-} SerialPort;
-
 /*************/
 /* EXTERNS */
 /*************/
-extern volatile uint8_t game_complete;
+struct SerialPort;
 extern Steinway piano;
-
-extern SerialPort USART1_PORT;
-
-enum {
-    BAUD_9600,
-    BAUD_19200,
-    BAUD_38400,
-    BAUD_57600,
-    BAUD_115200
-};
 
 /*************/
 /* FUNCTIONS */
@@ -119,35 +94,14 @@ void HAL_TSC_ConvCpltCallback(TSC_HandleTypeDef* htsc);
  * - key = key that was "pressed"/key to check
  * - threshold = known threshold for when the key is pressed
  */
-void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16_t threshold, SerialPort *serial_port);
+void key_press_logic(uint16_t sample_value, Steinway *piano, uint8_t key, uint16_t threshold, struct SerialPort *serial_port);
 
-// gameplay_logic: Logic for the piano gameplay; checks if sequence of keys is correct.
-// inputs:
-/* - piano: address to piano struct
- * - key: key that was pressed
- */
 void gameplay_logic(Steinway* piano, uint8_t key);
 
-// SerialInitialise: Initialises serial ports
-// inputs:
-/* - baudRate: Baud rate for serial communication
- * - serial_port: Port for serial communication (USART1)
- */
-void SerialInitialise(uint32_t baudRate, SerialPort *serial_port);
-
-// USART1_EXTI25_IRQHandler: Serial interrupt handler
-void USART1_EXTI25_IRQHandler(void);
-
-// tx_char: Outputs one ASCII character over serial
-// inputs:
-/* - character: ASCII character to be transmitted
- * - serial_port: Serial port to transmit over; USART1 for this program
- * - piano: Piano struct which stores the piano data
- * - key: Corresponding key to be transmitted
- */
-void tx_char(uint8_t character, SerialPort *serial_port, Steinway* piano, uint8_t key);
-
 // completion_function: Sends signal to main board to signify game is complete
-void completion_function(void);
+void completion_function(Steinway *piano);
+
+void reset_piano_state(Steinway *piano);
+
 
 #endif

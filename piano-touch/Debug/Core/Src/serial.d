@@ -1,4 +1,4 @@
-Core/Src/game_logic.o: ../Core/Src/game_logic.c ../Core/Inc/game_logic.h \
+Core/Src/serial.o: ../Core/Src/serial.c ../Core/Inc/serial.h \
  ../Core/Inc/digitalio.h ../Core/Inc/timer.h ../Core/Inc/stm32f303xc.h \
  ../Core/Inc/core_cm4.h ../Core/Inc/cmsis_version.h \
  ../Core/Inc/cmsis_compiler.h ../Core/Inc/cmsis_gcc.h \
@@ -27,8 +27,8 @@ Core/Src/game_logic.o: ../Core/Src/game_logic.c ../Core/Inc/game_logic.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pwr.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pwr_ex.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tsc.h \
- ../Core/Inc/digitalio.h ../Core/Inc/serial.h
-../Core/Inc/game_logic.h:
+ ../Core/Inc/game_logic.h ../Core/Inc/digitalio.h
+../Core/Inc/serial.h:
 ../Core/Inc/digitalio.h:
 ../Core/Inc/timer.h:
 ../Core/Inc/stm32f303xc.h:
@@ -63,5 +63,5 @@ Core/Src/game_logic.o: ../Core/Src/game_logic.c ../Core/Inc/game_logic.h \
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pwr.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pwr_ex.h:
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tsc.h:
+../Core/Inc/game_logic.h:
 ../Core/Inc/digitalio.h:
-../Core/Inc/serial.h:

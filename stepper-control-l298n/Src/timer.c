@@ -8,6 +8,8 @@ uint32_t get_time(void){
 
 void enable_timer3_interrupt(void) {
 
+	RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;           // enable clock for timer 3
+
 	__disable_irq();
     TIM3->PSC = 333;              		// Timer set to 100Hz
     TIM3->ARR = 20;                     // 1s timer
@@ -23,6 +25,8 @@ void enable_timer3_interrupt(void) {
 }
 
 void enable_timer2_interrupt(void) {
+
+	RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;           // enable clock for timer 2
 
 	__disable_irq();
     TIM2->PSC = 7;              		// Timer set to 1MHz

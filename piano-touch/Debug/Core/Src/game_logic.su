@@ -1,9 +1,5 @@
-../Core/Inc/core_cm4.h:1688:22:__NVIC_EnableIRQ	16	static
-../Core/Inc/core_cm4.h:1816:22:__NVIC_SetPriority	16	static
-../Core/Src/game_logic.c:41:6:HAL_TSC_ConvCpltCallback	32	static
-../Core/Src/game_logic.c:62:6:key_press_logic	24	static
-../Core/Src/game_logic.c:111:6:gameplay_logic	64	static
-../Core/Src/game_logic.c:176:6:SerialInitialise	24	static,ignoring_inline_asm
-../Core/Src/game_logic.c:240:6:USART1_IRQHandler	8	static
-../Core/Src/game_logic.c:265:6:tx_char	24	static,ignoring_inline_asm
-../Core/Src/game_logic.c:281:6:completion_function	4	static
+../Core/Src/game_logic.c:24:6:HAL_TSC_ConvCpltCallback	32	static
+../Core/Src/game_logic.c:45:6:key_press_logic	24	static
+../Core/Src/game_logic.c:94:6:gameplay_logic	64	static
+../Core/Src/game_logic.c:160:6:completion_function	16	static
+../Core/Src/game_logic.c:169:6:reset_piano_state	16	static

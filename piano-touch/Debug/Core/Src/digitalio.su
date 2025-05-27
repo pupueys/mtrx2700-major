@@ -1,5 +1,5 @@
 ../Core/Src/digitalio.c:4:6:enable_clocks	4	static
-../Core/Src/digitalio.c:10:6:initialise_gpio	16	static
-../Core/Src/digitalio.c:23:6:set_leds	16	static
-../Core/Src/digitalio.c:29:6:clear_leds	16	static
-../Core/Src/digitalio.c:34:6:game_wait	4	static
+../Core/Src/digitalio.c:11:6:initialise_gpio	16	static
+../Core/Src/digitalio.c:21:6:set_leds	16	static
+../Core/Src/digitalio.c:27:6:clear_leds	16	static
+../Core/Src/digitalio.c:32:6:game_wait	4	static

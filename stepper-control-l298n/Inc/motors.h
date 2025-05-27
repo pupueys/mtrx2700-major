@@ -22,20 +22,25 @@
 #include "serial.h"
 #include "digitalio.h"
 #include "stm32f303xc.h"
+#include "gantry_logic.h"
 
 /***************/
 /* DEFINITIONS */
 /***************/
 // motor struct
-typedef struct {
+typedef struct Motor {
 
 	bool running;			// flag for when motor is spinning
 	uint8_t direction;		// direction of motor rotation
 	uint8_t step_index;		// index for step sequence logic
-	uint16_t position;		// position of motor
+	int16_t position;		// position of motor
+	int16_t upper_limit;
+	int16_t lower_limit;
 
 } Motor;
 
+#define XLIMIT 2500
+#define YLIMIT 2600
 
 /*************/
 /* FUCNTIONS */

@@ -1,4 +1,5 @@
 "./Src/digitalio.o"
+"./Src/gantry_logic.o"
 "./Src/main.o"
 "./Src/motors.o"
 "./Src/serial.o"
