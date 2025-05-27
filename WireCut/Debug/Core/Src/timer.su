@@ -1,0 +1,6 @@
+../Core/Inc/core_cm4.h:1688:22:__NVIC_EnableIRQ	16	static
+../Core/Inc/core_cm4.h:1816:22:__NVIC_SetPriority	16	static
+../Core/Src/timer.c:10:6:enable_7seg_interrupts	8	static,ignoring_inline_asm
+../Core/Src/timer.c:28:6:TIM3_IRQHandler	8	static
+../Core/Src/timer.c:47:6:stop_timer	4	static
+../Core/Src/timer.c:51:6:reduce_time	16	static
