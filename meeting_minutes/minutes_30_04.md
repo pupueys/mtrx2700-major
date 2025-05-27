@@ -11,10 +11,12 @@
 ### Meeting Purpose:
 Initial team formation and brainstorming for final project. Finalaise the Idea and start working on it.
   
-#### Team Introduction and Planning
+#### Team Introduction
 - All team members introduced themselves and discussed their backgrounds.
 - Created a new GitHub repository and added everyone as collaborators.
 - Discussed project ideas from mid-sem brainstorming and listed five components.
+
+#### Planning and brainstrom
 - Finalised three mini-games: Wire Cut (Nadeen), Lock Picking (Abdullah), Piano Game (Ethan).
 - Agreed that the player would move using a gantry platform (Anikan) and magnets.
 - PTU laser system (Harsh) will track and attempt to locate the player.
