@@ -1,4 +1,0 @@
-../Src/digital_io.c:11:6:enable_clocks	1
-../Src/digital_io.c:19:6:initialise_board	1
-../Src/digital_io.c:40:6:set_led_state	1
-../Src/digital_io.c:46:6:start_game	1
