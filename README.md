@@ -386,7 +386,33 @@ Ensure PC2 detects a HIGH signal correctly from another board and triggers start
 - The game is fully modular, with logic split across digital I/O, timers, and display modules for clarity and maintainability.
 - Ensure all peripheral clocks are enabled and timers configured before triggering gameplay.
   
-### Pan-Tilt Unit + LiDAR
+---
+
+# Pan-Tilt Unit + LiDAR
+
+## Summary
+This module implements a real-time hide-and-seek style game using a Pan-Tilt Unit (PTU) equipped with a Garmin LiDAR-Lite v3 sensor. The PTU performs a raster scan of its surroundings to detect motion or intrusions based on deviations from a pre-recorded baseline depth map. This module runs continuously on the STM32F3 Discovery board and communicates results via UART.
+
+## Operating Principle
+### Raster Scanning
+- The PTU is controlled via two PWM channels (pan and tilt), which position the LiDAR sensor in a 2D scan grid.
+- Default resolution is 6×5 (pan × tilt) positions.
+- After each PWM adjustment, a delay (~40 ms) allows mechanical settling before capturing a distance measurement.
+
+### Baseline Acquisition
+- On startup, the full scan grid is traversed.
+- Distance readings are collected at each point and streamed over UART in CSV format.
+- This data serves as a reference model for an “empty room.”
+
+### Continuous Monitoring
+- The PTU continuously repeats the scan cycle
+- At each position, the live distance is compared with the baseline value.
+- Any significant deviation (indicating presence of a foreign object or movement) is flagged as an intrusion.
+- Intrusion data (coordinates, distance error) is logged and optionally transmitted.
+
+
+
+
 
 
 # Find the Correct Voltages 
