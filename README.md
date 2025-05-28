@@ -319,7 +319,13 @@ Controls a dual-digit multiplexed 7-segment display.
   - Alternates between the two digits for display multiplexing (driven by Timer 3 interrupts).
 
 ---
+### `gamelogic.c` / `seven_seg.h` – 7-Segment Display Management
+- `void enable_wire_interrupts(void)` - Configures EXTI interrupts on PE4–PE9 (wires). Maps each EXTI line to Port E via SYSCFG and enables falling edge trigger for all 6 pins.
+- `void EXTI4_IRQHandler(void)` and `void EXTI9_5_IRQHandler(void)` - this is the interrupt handler which handles each wire pull. Based on the interrupt handler called a index is fixed and `handle_wire_pull(int wire_index)` is called.
+- `void handle_wire_pull(int wire_index)` - This is the main logic for handling a wire pull interrupt. It ignores the imterrupt if the game is over or if the wire was already pulled.If the wire is correct (based on correct_wires[]), increments correct_count. If incorrect, reduces the time by 10 seconds, updates the display, and increments wrong_count. Calls end_game(1) if all correct wires are pulled. Calls end_game(0) if time runs out or if 2 wrong wires are pulled. Unmasks interrupt lines and enables NVIC handlers.
+- `void end_game(int end_of_game)` - This is the function that runs to end the game. It decides the outcome of the game based on the input of the function. It sets the game_over flag to high and if end_of_game glag is set to 1 it stops the timer, sets LED pattern, and triggers open_door(). If end_of_game == 0 it stops the timer, sets display to 0, and turns on the buzzer.
 
+This controles the game logic and uses interrupts to detect wire pulls.
 ## Game Flow
 
 1. Wait for game start signal (PC2 high).
@@ -389,10 +395,4 @@ This project modularizes the implementation of finding correct voltages using th
 - **Voltage Reference**: Defined by ADC_VREF_MV (typically 3000mV).
 - **Resolution**: 12-bit ADC (0-4095 range).
 
-## TIMER/INTERRUPTS
-- **Delay**: Uses a simple for-loop delay (10000 iterations) between ADC readings for stability.
-- **Continuous Sampling**: Game loop polls ADC channels continuously for real-time updates.
-- **No Interrupts**: Relies on polling, no interrupt-driven operations.
-
---- 
 
