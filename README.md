@@ -1,6 +1,7 @@
 # The Feline Felon
 # Project Overview
 ---
+The Feline Felon is an interactive escape room-style game system built around a STM32F303 microcontroller platform. This project challenges players to complete a series of intricate puzzles and mini-games to successfully "break into" a secured location, combining elements of strategy, skill, and problem-solving.
 # Roles and Responsibilities
 ---
 The following were the allocations for the team:
@@ -341,4 +342,57 @@ Controls a dual-digit multiplexed 7-segment display.
 - Ensure all peripheral clocks are enabled and timers configured before triggering gameplay.
   
 ### Pan-Tilt Unit + LiDAR
+
+
+# Find the Correct Voltages 
+
+## Overview
+This project modularizes the implementation of finding correct voltages using the STM32 Discovery board. The system uses a modular design to distribute tasks across the project, incorporating analog-to-digital conversion, digital I/O, and game logic. The challenge starts with three potentiometers, where the user must determine the correct voltages. The obstacle is that the user must find two correct voltages to unlock the third potentiometer. Each time the user finds a correct voltage, an LED corresponding to that potentiometer lights up.
+## Usage Instrctions 
+### STM32 Setup
+1. Import the project into STM32Cube IDE
+2. Flash the program to the STM32 using the default configuration 
+3. Connect the each potentiometer to 5V and GND 
+4. Connect each potentiometer output to PC1-PC3 pins in the STM32
+5. The game will be start and the user has to change the first and second LED until the LEDs light up 
+6. If the user find the two first voltages then the user can find the third voltage
+7. If all LEDs are correct then the door will open 
+## VALID SUCCESS
+- LED1 lights when PC1 voltage matches 1V ± 100mV.
+- LED2 lights when PC2 voltage matches 1.5V ± 100mV.
+- LED3 lights when PC3 voltage matches 2V ± 100mV, only after LED1 and LED2 are lit.
+- PA0 outputs high when all LEDs are lit, indicating game completion.
+
+## Module Overview 
+## main.c 
+- Call `enable_clocks()` to enable GPIOA, GPIOC, and GPIOE clocks.
+- Run `initialise_board()` to set up LED outputs (PE8-PE15) and analog inputs (PC1-PC3).
+- Use `ConfigureADC()` to initialize ADC1 for voltage readings.
+- Start the game with `SequentialVoltageGameADC()` to enter the main loop.
+- Adjust potentiometers to match target voltages and light LEDs.
+## peripherals.h / peripherals.c
+- **Initialization**:
+  - `enable_clocks()`: Enables RCC clocks for GPIOA, GPIOC, and GPIOE.
+  - `initialise_board()`: Sets PE8-PE15 as outputs, PC1-PC3 as analog inputs, PA0 as digital output.
+  - `ConfigureADC()`: Configures ADC1 with clock sync, calibration, and single-ended mode.
+- **ADC Operations**:
+  - `ReadADC(channel)`: Reads 12-bit ADC value from a specified channel.
+  - `ConvertADCToMillivolts(adcValue)`: Converts ADC value to millivolts using ADC_VREF_MV.
+- **Game Logic**:
+  - `SequentialVoltageGameADC()`: Loops indefinitely, reads ADC channels, controls LEDs based on voltage thresholds.
+
+
+## DIGITAL I/O
+- **Inputs**: PC1, PC2, PC3 as analog inputs for potentiometers.
+- **Outputs**: PE8 (LED1), PE9 (LED2), PE10 (LED3) for LEDs; PA0 for win signal.
+- **ADC Channels**: Configured for PC1, PC2, PC3 (channels defined in peripherals.h).
+- **Voltage Reference**: Defined by ADC_VREF_MV (typically 3000mV).
+- **Resolution**: 12-bit ADC (0-4095 range).
+
+## TIMER/INTERRUPTS
+- **Delay**: Uses a simple for-loop delay (10000 iterations) between ADC readings for stability.
+- **Continuous Sampling**: Game loop polls ADC channels continuously for real-time updates.
+- **No Interrupts**: Relies on polling, no interrupt-driven operations.
+
+--- 
 
