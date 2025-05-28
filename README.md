@@ -395,8 +395,8 @@ This module implements a real-time hide-and-seek style game using a Pan-Tilt Uni
 
 ## Operating Principle
 ### Raster Scanning
-- The PTU is controlled via two PWM channels (pan and tilt), which position the LiDAR sensor in a 2D scan grid.
-- Default resolution is 6×5 (pan × tilt) positions.
+- The PTU is controlled via two PWM channels (pan and tilt), which position the LiDAR sensor in a 3D scan grid.
+- The PTU performs a 180 ° × 90 ° raster scan (6 × 5 grid).
 - After each PWM adjustment, a delay (~40 ms) allows mechanical settling before capturing a distance measurement.
 
 ### Baseline Acquisition
@@ -410,9 +410,19 @@ This module implements a real-time hide-and-seek style game using a Pan-Tilt Uni
 - Any significant deviation (indicating presence of a foreign object or movement) is flagged as an intrusion.
 - Intrusion data (coordinates, distance error) is logged and optionally transmitted.
 
+* **MCU:** STM32F3‑Discovery (Cortex‑M4, FPU)
+* **PTU:** Mercury Gimbal (dual hobby servos)
+  \* Horizontal PWM on `TIM3‑CH1` (PA6)
+  \* Vertical   PWM on `TIM3‑CH2` (PA7)
+* **Distance sensor:** Garmin LiDAR‑Lite v3 on `PB6/PB7` (I²C‑1)
+* **Host PC:** Any OS with Python 3.10+
 
+\## Serial Frame Format
 
-
+```text
+V:<vert_pwm> H:<horiz_pwm> D:<distance_cm>cm\n
+Example:  V:1023 H:1500 D:187cm
+```
 
 
 # Find the Correct Voltages 
