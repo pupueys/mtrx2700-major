@@ -1,61 +1,344 @@
-# mtrx2700-major project 
+# The Feline Felon
 # Project Overview
 ---
 # Roles and Responsibilities
 ---
+The following were the allocations for the team:
+- *Abdullah:*  Lock Picking module
+- *Anikan:* Gantry design, LiDAR/TPU development
+- *Ethan:* Motor control, piano module
+- *Harsh:* LiDAR/TPU development
+- *Nadeen:* Bomb defusal module
 # Repo Workflow and Convention
 ---
+Each member separately worked on their allocated tasks, meeting up regularly to check on task progress, and once complete, a meeting was held for integration.
+
+The program files can be found in the folder with their respective names. The minutes can be found in the Meeting Minutes folder.
+
 # Modules and Submodules 
 ---
-## Wire Cut Game
-### Summary
----
-This project modularises the implementation of a wire-cutting game using the STM32F3 Discovery board. The system uses multiple modules to separate responsibilities across digital I/O, game logic, and 7 Seg display control. The game begins on a signal from the main board and requires the player to pull the correct wires within a countdown period of 30 seconds. Pulling the wrong wire reduces the time, and 2 wrong wire pulls or timer going to 0 results in the failure of the game. A buzzer goes off if the player fails. If the player cuts the correct two wires the player wins and a signal goes to the main board via GPIO signaling to start the next game and open the door.
+# Gantry Control System
 
-### Usage
----
-- Import the project into STM32CubeIDE.
-- Run the main file. And the game starts when a signal from the main board is received.
-- The 7-segment display counts down from 30 seconds.
-- The player pulls wires connected to PE4 to PE9 and 5V. Correct pulls increase progress; wrong pulls reduce remaining time.
-- Success opens a door via PC8. Failure plays a buzzer sound using PWM.
+## Overview
 
-### Valid Input
----
-- Game starts when PC2 reads a high value coming from main board.
-- Pull wires connected to PE4–PE9 which are then connected to 5v. Its is pull down configuration so when wire is pulled the pin reads 0v and interrupt is triggered.
-- PA2 is set to output a PWM signal using HAL
-- Game logic decides the output of the game.
+This project implements a two-axis gantry control system using two NEMA-17 stepper motors, controlled by a user via keyboard input. The input is read from a Python script (`gantry.py`) running on a computer, and communicated to an STM32F303 microcontroller over a serial connection using USART1. The microcontroller then processes this input and drives the motors accordingly using the L298N H-bridge motor driver.
 
-###  Functions and Modularity 
+Motor stepping logic is implemented in software on the STM32F303, and the system supports movement in both cardinal (W, A, S, D) and diagonal (E, Q, Z, C) directions. The gantry system is room-aware, automatically adjusting motion bounds when the player moves into a new room.
+
 ---
-#### main.c / main.h
-HAL was used to set pin PA2 to tim2/ch3 which outputs a PWM signal. A prescaller of 47 and ARR of 500 was set to create appropriate PWM signals. This PA2 is used to turn the buzzer on or off.
-The main function is the entry point of the code where it first configure all HAl releated peripherals and waits for the game start flag in a while loop which is sent by the main board and then runs the `start_game()` function which starts the wire cut game.
-- `void enable_and_initialise()` - This function is used to enable the GPIOC clocks and set PC1 as an input. It also sets PC1 in a pull down configuration to read the flag coming from main board.
-- `void play_note(uint16_t arr_val)` - This function is called in the digital_io.c function. It uses the PWM signal from PA2 to turn the buzzer on using the input value passed onto the function. `__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, arr_val)` is used to trun the buzzer on.
+
+## Features
+
+- Dual-axis stepper motor control using software-driven stepping logic
+- Full keyboard control with support for both cardinal and diagonal directions
+- Real-time serial communication between PC and STM32F303 via USART1
+- Integration with L298N H-bridge motor drivers
+- Room-based boundaries for contextual control logic
+- Idle detection and motor disabling for energy efficiency
+
 ---
-#### digital_io.c / digital_io.h_
-This module handles all digital IO parts of the code like initialising the pins, enabling clocks and sending signals indicating end of game.
-- `enable_clocks()` - Enables clocks for GPIO ports (A, C, D, E) and Timer 3 for 7 seg display.
-- `initialise_board` - Initialises GPIO pins PD0-6 for 7 segment, PE4-9 for wire interrupts and also sets it as pull down. It also sets PC6-8 as outputs for digit control and game_over signal.
-- `set_led_state(state)` - Turns the on board LEDs based on the pattern sent as a input to the function. It is used to test the end results of the game.
-- `buzzer_on()` - Triggers the buzzer using PWM on TIM2 Channel 3 to generate a tone for 100 ms.
-- `open_door()` - It sets PC8 as high which is connected to the main board. This signals that the game is over and the doors should be opened.
-- `start_game()` -  High-level setup function that calls all other initialisation functions, resets time_left, and enables interrupts for 7-segment and wires.This basically starts the entire game when called.
+
+## Usage Instructions
+
+### STM32 Setup
+
+1. Import the project into STM32CubeIDE.
+2. Connect the STM32F303 to your computer using a Mini-USB to USB-A cable. Plug the Mini-USB into the ST-Link port of the STM32 board and the USB-A into your computer.
+3. Build and flash the project to the microcontroller using default IDE settings.
+
+### Python Script (`gantry.py`) Setup
+
+1. Open `gantry.py` using a code editor such as Visual Studio Code.
+2. Configure the correct COM port and baud rate. For example:
+
+   ```python
+   ser = serial.Serial('COM7', 115200)  # Change COM port as needed
+   ```
+
+3. Run the script.
+4. Use the following keyboard controls:
+   - `W`, `A`, `S`, `D`: Move up, left, down, and right respectively.
+   - `E`, `Q`, `Z`, `C`: Move diagonally (NE, NW, SW, SE).
+5. Room transitions occur automatically. Boundaries are updated based on the player’s position.
+
+### Baud Rate Configuration
+
+The serial baud rate is configured in `main.c` through the `SerialInitialise()` function:
+
+```c
+SerialInitialise(BAUD_19200); // Example
+```
+
+Supported baud rates:
+- `BAUD_9600`
+- `BAUD_19200`
+- `BAUD_38400`
+- `BAUD_57600`
+- `BAUD_115200`
+
+Ensure that the baud rate in `gantry.py` matches the one defined on the STM32. Invalid identifiers such as `baud_19200` or `BAUD_420` are not supported and will cause errors.
+
+To verify the correct COM port:
+- On Windows, open Device Manager and locate the COM port under “Ports (COM & LPT)”.
+
+While terminal software like PuTTY can be used to verify serial functionality, the preferred method is to run `gantry.py` for full functionality and smoother motor control.
+
+---
+
+## Module Overview
+
+### `digitalio.h` – Digital I/O Configuration
+
+Provides system clock and GPIO initialization:
+- `enable_clocks()`: Enables system and peripheral clocks including GPIO and timers.
+- `initialise_board()`: Sets up GPIO pins as inputs or outputs as needed.
+
+### `serial.h` – Serial Communication
+
+Handles USART1-based serial communication:
+- `SerialInitialise()`: Sets up serial port with specified baud rate and enables USART1.
+- `handle_key()`: Processes incoming serial data and updates motor direction flags.
+- `get_last_key()`: Returns the last valid key received via serial.
+
+### `timers.h` – Timer Configuration and Management
+
+Manages the timers used for motor control and idle detection:
+- `enable_timer2_interrupt()`: Enables Timer 2 interrupt for millisecond tracking.
+- `TIM2_IRQHandler()`: Timer 2 ISR for checking idle state based on input timing.
+- `enable_timer3_interrupt()`: Enables Timer 3 for stepper motor timing.
+- `TIM3_IRQHandler()`: Timer 3 ISR to control step sequence timing and motor speed.
+- `get_time()`: Returns the current time in milliseconds.
+
+### `motors.h` – Motor Control
+
+Defines motor behavior and drive logic:
+- `motor1_enable(direction)`: Enables motor 1 in the specified direction.
+- `motor2_enable(direction)`: Enables motor 2 in the specified direction.
+- `motor1_disable()`: Disables motor 1 when idle.
+- `motor2_disable()`: Disables motor 2 when idle.
+- `set_last_press_time(time)`: Records the last time an input was received.
+- `motor_logic()`: Executes step sequence logic and checks movement bounds.
+- `motor_idle(current_time, key)`: Handles idle state and disables motors when inactive.
+
+### `gantry_logic.h` – Game State and Room Logic
+
+Controls room-based gameplay logic:
+- `check_room_state(motor)`: Evaluates current motor position to determine room state and triggers corresponding game activation logic.
+
+---
+
+## Notes
+
+- The system is designed to be modular and extensible, allowing for additional motor axes, sensor integration, or gameplay functionality.
+- Motor performance and responsiveness depend heavily on the chosen baud rate and timer configurations.
+- Ensure proper power supply and grounding when using external drivers like the L298N with the STM32 board.
+
+
+# Capacitive Touch Piano Module
+
+## Overview
+
+This module implements a capacitive touch piano using the STM32F303 microcontroller and the built-in Touch Sensing Controller (TSC). The player must correctly play a predefined song sequence to unlock the door and proceed. While its connection to a robbery may be questionable, the gameplay mechanic adds a unique musical challenge.
+
+The piano consists of five touch-sensitive keys, each corresponding to a musical note (C, D, E, F, G). Upon pressing a key, the corresponding note is sent via serial to a Python script (`piano.py`), which plays a `.wav` file for that note through the computer.
+
+---
+
+## Features
+
+- Capacitive touch input using STM32's TSC hardware abstraction layer (HAL)
+- Five playable keys: C, D, E, F, G
+- Real-time serial communication with a PC to play audio files
+- Validates note sequences to determine whether the correct song is played
+- Visual feedback using onboard LEDs
+- Game restarts automatically upon success or error
+- Waits for external game trigger via GPIO (PC1)
+
+---
+
+## Usage Instructions
+
+### STM32 Setup
+
+1. Import the project into **STM32CubeIDE**.
+2. Build and flash the project to the STM32F303 using the default configuration.
+3. Connect the STM32F303 to your computer using a Mini-USB to USB-A cable (Mini-USB connects to the ST-Link port).
+4. Ensure PC1 is pulled high externally to start the game.
+
+### Python Script (`piano.py`) Setup
+
+1. Open `piano.py` using a text editor or IDE (e.g., Visual Studio Code).
+2. Configure the serial port and baud rate by modifying the following line:
+
+   ```python
+   ser = serial.Serial('COM7', 115200)  # Update COM port and baud rate as required
+   ```
+
+3. Run the Python script.
+4. Touch the resistive piano keys to play notes. If you play the correct song sequence, the game will signal completion and reset.
+
+---
+
+## Module Overview
+
+### `digitalio.h` – Digital I/O Management
+
+Handles general-purpose input/output configuration and LED control:
+
+- `enable_clocks()`: Enables GPIO and timer peripheral clocks.
+- `initialise_gpio()`: Configures all necessary GPIO pins for input/output.
+- `set_leds(pattern)`: Lights up STM32 onboard LEDs based on the given pattern.
+- `clear_leds()`: Turns off all STM32 onboard LEDs.
+- `game_wait()`: Polls GPIO pin PC1 and blocks execution until it is set high, signaling the start of the game.
+
+---
+
+### `timer.h` – Timer Control
+
+Responsible for handling time-dependent events:
+
+- `enable_timer2_interrupt()`: Enables Timer 2 for debouncing key presses to prevent repeated inputs. Only one input is allowed per second.
+- `enable_timer3_interrupt()`: Enables Timer 3, used to clear the key press state after the key is released.
+
+---
+
+### `serial.h` – Serial Communication
+
+Manages serial communication between the STM32 and the host PC:
+
+- `SerialInitialise(baud_rate)`: Sets up USART1 with the specified baud rate.
+- `tx_char(character, serial_port, piano, key)`: Sends a character via USART1 to `piano.py`, which plays the corresponding audio note.
+
+---
+
+### `game_logic.h` – Game State and Input Logic
+
+Implements the core gameplay and key-press validation:
+
+- `HAL_TSC_ConvCpltCallback(htsc)`: Callback triggered by touch sensing completion. Checks if any piano key is touched and handles accordingly.
+- `key_press_logic(sample_value, piano, key, threshold, serial_port)`: Determines whether a valid key press occurred and triggers audio + LED feedback.
+- `gameplay_logic(piano, key)`: Evaluates the current key in the context of the predefined song sequence (e.g., "Ode to Joy"). Resets if the wrong note is played or multiple notes are pressed simultaneously.
+- `completion_function(piano)`: Executes when the entire song sequence is played correctly. Sends a signal (pulse on PC9) to the main game controller to unlock the door.
+- `reset_piano_state(piano)`: Resets all piano state variables to allow the game to be played again.
+
+---
+
+## Notes
+
+- All touch sensing logic relies on STM32’s HAL for TSC configuration and sampling.
+- The game will not begin until PC1 is pulled high externally—ensure this condition is met before testing.
+- The `.wav` files must be present on the computer running `piano.py`, and mapped correctly to the serial input characters.
+- Make sure your serial COM port matches between `piano.py` and the STM32, and that the baud rate is consistent on both ends.
+
+
+
+# Bomb Defusal Game
+
+## Overview
+
+This module implements a timed bomb defusal game using the STM32F3 Discovery board. The player must correctly identify and cut two specific wires within a 30-second countdown. Incorrect wire pulls deduct time, and either two wrong pulls or the timer reaching zero results in failure. A buzzer is triggered on failure, while success opens a door via a signal to the main board.
+
+The game architecture is modular, separating functionality across digital I/O, timers, game logic, and 7-segment display control. The game begins upon receiving a start signal via GPIO from the main control board.
+
+---
+
+## Usage Instructions
+
+### STM32 Setup
+
+1. Import the project into **STM32CubeIDE**.
+2. Flash the program to the STM32F303 using the default configuration.
+3. Connect wire inputs to pins PE4–PE9 and 5V. Each pin is internally pulled down and triggers an interrupt when pulled to ground (i.e., when the wire is removed).
+4. The game begins when PC2 receives a high signal from the main control board.
+5. A 7-segment display counts down from 30 seconds.
+6. Correct wire pulls increase progress toward defusal.
+7. Two incorrect pulls or timeout triggers the buzzer (PA2 via PWM), and the game ends.
+8. Upon success, a high signal on PC8 is sent to the main board to open the door.
+
+---
+
+## Valid Inputs
+
+- **Game Start Trigger**: PC2 goes high (received from the main board).
+- **Wire Pull Inputs**: PE4–PE9. Connected to wires pulled to 5V. Internally configured as pull-down. A pulled wire registers as logic 0 and triggers an interrupt.
+- **Buzzer Output**: PA2, configured as TIM2 Channel 3 with PWM.
+- **Game Completion Output**: PC8 goes high on success.
+
+---
+
+## Module Overview
+
+### `main.c` / `main.h` – Entry Point & Buzzer Control
+
+The main function configures all HAL peripherals and loops until a game start signal is received via PC2. Once detected, `start_game()` is called to launch the defusal game.
+
+- `enable_and_initialise()`: Enables GPIOC clocks, sets PC1 as input with pull-down to read the start flag.
+- `play_note(uint16_t arr_val)`: Enables the buzzer using PWM output from PA2. Uses `__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, arr_val)` to control buzzer tone.
+
+---
+
+### `digital_io.c` / `digital_io.h` – Digital I/O and Game Signal Control
+
+Manages all GPIO configuration and signals for both gameplay and hardware interaction.
+
+- `enable_clocks()`: Enables GPIO clocks for Ports A, C, D, E and Timer 3.
+- `initialise_board()`: Sets up:
+  - PD0–PD6 as output pins for 7-segment segments
+  - PE4–PE9 as inputs with interrupts for wire pulling (pull-down configuration)
+  - PC6–PC8 as output pins for 7-segment digit select and game completion signal
+- `set_led_state(state)`: Updates onboard LEDs to indicate game status.
+- `buzzer_on()`: Plays a 100ms buzzer tone using PWM on TIM2 Channel 3.
+- `open_door()`: Sets PC8 high to signal game success to the main board.
+- `start_game()`: Initializes and enables all required components (clocks, timers, interrupts, game state) to begin gameplay.
+
+---
+
+### `timer.c` / `timer.h` – Timer Configuration and Game Logic
+
+Handles countdown logic and multiplexing of the 7-segment display using TIM3.
+
+- `enable_7seg_interrupts()`: Configures Timer 3 to trigger every 5 ms. Uses prescaler = 47000–1 and ARR = 5.
+- `TIM3_IRQHandler()`: 
+  - Called every 5 ms.
+  - Decrements the `time_left` counter every 200 ticks (~1 second).
+  - Updates display using `update_display(time_left)`.
+  - Calls `end_game()` if `time_left` reaches 0.
+- `stop_timer()`: Disables Timer 3 and stops countdown logic.
+- `reduce_time(uint8_t seconds)`: Deducts time from the countdown and updates the 7-segment display.
+
+---
+
+### `seven_seg.c` / `seven_seg.h` – 7-Segment Display Management
+
+Controls a dual-digit multiplexed 7-segment display.
+
+- `update_display(int val)`: 
+  - Splits input into tens and units digits.
+  - Uses a digit mapping array to determine which segments to illuminate.
+  - Alternates between the two digits for display multiplexing (driven by Timer 3 interrupts).
+
+---
+
+## Game Flow
+
+1. Wait for game start signal (PC2 high).
+2. Countdown begins from 30 seconds (displayed on 7-segment).
+3. Player pulls wires from PE4–PE9.
+   - Correct wires increase game progress.
+   - Wrong wires reduce remaining time via `reduce_time()`.
+4. Game ends in one of three ways:
+   - **Success**: Two correct wires pulled. `open_door()` is triggered.
+   - **Failure**: Two incorrect wires pulled. `buzzer_on()` is triggered.
+   - **Timeout**: Countdown reaches 0. `buzzer_on()` is triggered.
+
+---
+
+## Notes
+
+- Buzzer is controlled via PWM on PA2 (TIM2_CH3).
+- Wire inputs are configured as pull-down, triggering an interrupt on logic low.
+- The game is fully modular, with logic split across digital I/O, timers, and display modules for clarity and maintainability.
+- Ensure all peripheral clocks are enabled and timers configured before triggering gameplay.
   
----
-#### timer.c / timer.h
-This module handles all timer related functions in 1 file. Everything related to timers are programmed in this so that it is modular and easily accessible.
-- `enable_7seg_interrupts()` - Configures Timer 3 to trigger every 5 ms and the interrput handler is called. A presclaler of 47000 - 1 and ARR of 5 was choosen to create a 5 ms timer. This interrupt is used for multiplexing and countdown logic.
-- `TIM3_IRQHandler()` - This handles the tim 3 interrupt and it decreases the `time_left` by 1 every 200 ticks which will amount to 1 second since the handler is called every 5 ms. The updated time_left is then get updated to the display by using `update_display(time_left)` function. This function also calls the `end_game()` when the time_left hits 0.
-- `stop_timer()` - This is the function that is called when the time_left is 0 or if the game is over. It stops the timer 3 interrupt so that the time_left is no longer updated.
-- `reduce_time(uint8_t seconds)` - This function is called when the user pulls the two wrong wires. The input of the function is the amount of time that needs to be detucted. Then this time if subracted from the total time left. Later `update_display(time_left)` function is called to update the display.
-  
----
-#### seven_seg.c/seven_seg.h
-Manages the 2-digit 7-segment display. It has a array of values representing each number that should be displayed. 
-- `void update_display(int val)` - This function first splits the input into tens and ones and then it uses the digit array to map the respective 
-  
-
+### Pan-Tilt Unit + LiDAR
 

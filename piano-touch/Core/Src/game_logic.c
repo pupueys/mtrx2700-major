@@ -163,7 +163,6 @@ void completion_function(Steinway *piano) {
 	GPIOC->ODR &= ~(1 << 9);
 	reset_piano_state(piano);
 
-	return;
 }
 
 void reset_piano_state(Steinway *piano) {

@@ -42,8 +42,6 @@ void clear_leds(uint8_t key);
 // game_wait: waits for input signal to start the game
 void game_wait();
 
-void start_game_interrupt(void);
-
 void EXTI0_IRQHandler(void);
 
 #endif
