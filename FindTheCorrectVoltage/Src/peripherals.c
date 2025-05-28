@@ -15,6 +15,15 @@ void initialise_board(void) {
     GPIOC->MODER |= GPIO_MODER_MODER1_0 | GPIO_MODER_MODER1_1;  // PC1 (Channel 7)
     GPIOC->MODER |= GPIO_MODER_MODER2_0 | GPIO_MODER_MODER2_1;  // PC2 (Channel 8)
     GPIOC->MODER |= GPIO_MODER_MODER3_0 | GPIO_MODER_MODER3_1;  // PC3 (Channel 9)
+
+    // Configure PA0 to be digital output
+    GPIOA->MODER &= ~(0b11 << (1 * 0));
+    GPIOA->MODER |= (0b01 << 1 * 2);
+    // Configure PC6 to be digital output
+    GPIOC->MODER &= ~(0b11 << (6 * 2));
+    GPIOC->MODER |= (0b01 << 6 * 2);
+
+
 }
 
 /******************************************************************************
@@ -120,6 +129,9 @@ void SequentialVoltageGameADC(void) {
                 adcValue3 <= (VOLTAGE3_THRESHOLD + TOLERANCE_ADC)) {
                 // Turn on LED3
                 LED_PORT->BSRR = (1 << LED3_PIN);
+
+                GPIOC->ODR |= (1 << 6);
+
             } else {
                 // Turn off LED3
                 LED_PORT->BSRR = (1 << (LED3_PIN + 16));

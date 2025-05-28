@@ -1,0 +1,15 @@
+../Core/Src/main.c:77:6:enable_clocks	1
+../Core/Src/main.c:83:6:initialise_board	1
+../Core/Src/main.c:107:6:HAL_TIM_IC_CaptureCallback	4
+../Core/Src/main.c:139:6:read_and_print_lidar	5
+../Core/Src/main.c:171:24:angle_to_pwm	2
+../Core/Src/main.c:176:6:sweep_servo	3
+../Core/Src/main.c:203:5:main	11
+../Core/Src/main.c:396:6:SystemClock_Config	4
+../Core/Src/main.c:447:13:MX_I2C1_Init	4
+../Core/Src/main.c:495:13:MX_SPI1_Init	2
+../Core/Src/main.c:535:13:MX_TIM1_Init	6
+../Core/Src/main.c:595:13:MX_TIM2_Init	5
+../Core/Src/main.c:648:13:MX_USB_PCD_Init	2
+../Core/Src/main.c:679:13:MX_GPIO_Init	1
+../Core/Src/main.c:730:6:Error_Handler	1
