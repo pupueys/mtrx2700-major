@@ -326,6 +326,45 @@ Controls a dual-digit multiplexed 7-segment display.
 - `void end_game(int end_of_game)` - This is the function that runs to end the game. It decides the outcome of the game based on the input of the function. It sets the game_over flag to high and if end_of_game glag is set to 1 it stops the timer, sets LED pattern, and triggers open_door(). If end_of_game == 0 it stops the timer, sets display to 0, and turns on the buzzer.
 
 This controles the game logic and uses interrupts to detect wire pulls.
+
+## Individual Testing
+
+Individual Module testing for each module is given bellow,
+
+### `main.c` / `main.h` 
+Ensure PC2 detects a HIGH signal correctly from another board and triggers start_game(). Manually call play_note(arr_val) with known values and confirm buzzer tone plays correctly on PA2 using PWM.
+
+### `digital_io.c `
+- Confirm PE4–PE9 read LOW by default and trigger interrupts on falling edge when connected to 5V.
+- Toggle PD0–PD6 manually and verify 7-segment segments light up accordingly.
+- Call open_door() and check PC8 goes HIGH using multimeter.
+- Call buzzer_on() and verify short buzzer beep.
+
+### timer.c 
+- Start Timer 3 using enable_7seg_interrupts() and verify periodic interrupts are firing (e.g., via a debug LED).
+- Confirm countdown value decrements every second and try using different Prescaller or ARRR values.
+- Test reduce_time() and validate that time subtracts correctly and updates display.
+- Verify stop_timer() disables countdown properly.
+
+### seven_seg.c
+- Call update_display(val) with multiple values (e.g., 30, 15, 01) and confirm the correct digits show.
+- Check that digits alternate correctly and segments are lit properly for each digit.
+
+### game_logic.c 
+- Simulate correct wire pulls and confirm correct_count increments.
+- Simulate wrong wire pulls and verify wrong_count increments and time reduces.
+- Confirm game ends correctly after 2 wrong pulls or time reaching 0.
+- On win, ensure open_door() is called; on loss, verify buzzer triggers.
+
+## Integration Testing
+- Power on the system, confirm idle state until PC2 goes HIGH.
+- Trigger a start signal and verify countdown begins.
+- Test wire pulls in live conditions (pull correct/incorrect wires).
+- Observe correct game state transitions: win or loss and time decreasing.
+- Ensure buzzer, LED, and 7-segment all respond according to outcome.
+- Verify PC8 HIGH signal is sent only on success.
+
+
 ## Game Flow
 
 1. Wait for game start signal (PC2 high).
